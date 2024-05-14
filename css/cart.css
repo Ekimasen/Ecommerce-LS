@@ -1,0 +1,380 @@
+/* Custom styling for the cart table */
+#cart-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+#cart-table th,
+#cart-table td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    font-size: 20px;
+}
+
+#cart-table th {
+    background-color: #f2f2f2;
+}
+
+#cart-table td img {
+    display: block;
+    margin: 0 auto;
+    max-width: 150px;
+    height: auto;
+}
+
+#cart-table td:nth-child(n+3) {
+    text-align: center;
+}
+
+#cart-table td:nth-child(4) input[type="number"] {
+    font-size: 16px; 
+}
+
+#cart-table td:last-child button {
+    padding: 10px 20px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* Style for the checkout button */
+#checkout-btn {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    float: right; /* Position to the right */
+}
+
+#checkout-btn:hover {
+    background-color: #0056b3;
+}
+
+#navbar #lg-bag {
+position: relative;
+}
+
+#navbar #lg-bag a {
+font-size: 24px;
+position: relative;
+color: #ffffff;
+}
+
+#navbar #lg-bag a span {
+position: absolute;
+top: -5px;
+right: -10px;
+background-color: red;
+color: white;
+border-radius: 50%;
+padding: 4px;
+font-size: 12px;
+}
+
+#cart-count{
+color: #ffffff;
+margin-left: 5px;
+}
+
+/* Style for modal */
+.modal {
+display: none; /* Hidden by default */
+position: fixed; /* Stay in place */
+z-index: 1; /* Sit on top */
+left: 0;
+top: 0;
+width: 100%; /* Full width */
+height: 100%; /* Full height */
+overflow: auto; /* Enable scroll if needed */
+background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+}
+
+/* Modal content */
+.modal-content {
+background-color: #fff; /* White background */
+margin: 10% auto; /* Center modal vertically */
+padding: 30px; /* Increased padding */
+border-radius: 10px; /* Rounded corners */
+box-shadow: 0 0 20px rgba(0, 0, 0, 0.2); /* Box shadow for depth */
+width: 70%; /* Reduced width */
+max-width: 500px; /* Set maximum width */
+}
+
+/* Close button */
+.close {
+color: #aaa;
+float: right;
+font-size: 28px;
+font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+color: #333; /* Darken color on hover */
+text-decoration: none;
+cursor: pointer;
+}
+
+/* Form styling */
+#shipping-form label {
+display: block;
+margin-bottom: 10px;
+color: #333; /* Darken label color */
+}
+
+#shipping-form input[type="text"] {
+width: 100%;
+padding: 12px; /* Increased padding */
+margin-bottom: 20px;
+border: 1px solid #ccc;
+border-radius: 6px; /* Slightly rounded corners */
+box-sizing: border-box;
+font-size: 16px; /* Increased font size */
+}
+
+#shipping-form input[type="submit"] {
+background-color: #007bff; /* Blue submit button */
+color: white;
+padding: 14px 20px;
+border: none;
+border-radius: 6px;
+cursor: pointer;
+font-size: 16px; /* Increased font size */
+transition: background-color 0.3s; /* Smooth transition */
+}
+
+#shipping-form input[type="submit"]:hover {
+background-color: #0056b3; /* Darker blue on hover */
+}
+/* Payment Method Section Styling */
+#shipping-form select {
+    width: 100%;
+    padding: 12px; /* Increased padding */
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 6px; /* Slightly rounded corners */
+    box-sizing: border-box;
+    font-size: 16px; /* Increased font size */
+    color: #333; /* Darken label color */
+}
+
+#shipping-form select option {
+    color: #333; /* Darken label color */
+}
+/* Style for the invoice modal */
+#invoice-modal {
+    display: none; /* Hide the modal by default */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    overflow: auto;
+}
+
+/* Style for the modal content */
+#invoice-modal .modal-content {
+    background-color: #fefefe;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    max-width: 600px;
+    border-radius: 10px;
+    font-size: 20px;
+}
+
+/* Style for the close button */
+#invoice-modal .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+#invoice-modal .close:hover,
+#invoice-modal .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Style for the invoice details */
+#invoice-details {
+    margin-top: 20px;
+}
+
+/* Style for the confirm button */
+#invoice-details button {
+    margin-top: 20px;
+    height: 40px;
+    width: 80px;
+}
+
+/* Style for the invoice modal title */
+#invoice-modal h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+#invoice-modal p {
+    font-size: 20px;
+}
+/* Profile link styles */
+#profile-link {
+    margin-left: 20px;
+    display: flex;
+    align-items: center;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+#profile-link img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+#profile-link:hover {
+    text-decoration: underline;
+}
+/* CSS for the invoice table */
+.invoice-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.invoice-table th, .invoice-table td {
+    padding: 8px;
+    border: 1px solid #ddd;
+}
+
+.invoice-table th {
+    background-color: #f2f2f2;
+    text-align: left;
+}
+
+.invoice-table tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.invoice-table tbody tr:hover {
+    background-color: #ddd;
+}
+
+/* Payment modal specific styling */
+#payment-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.7); /* Slightly darker overlay */
+    backdrop-filter: blur(5px); /* Subtle blur effect */
+}
+
+#payment-modal .modal-content {
+    background-color: #f8f8f8; /* Softer white */
+    margin: 10% auto; /* Adjusted vertical margin */
+    padding: 40px; /* More padding for airiness */
+    border: none;
+    width: 50%;
+    max-width: 500px; /* Set a maximum width */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    border-radius: 20px; /* More pronounced rounding */
+    animation: slideUp 0.4s ease-out; /* Different animation */
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+#payment-modal .close-payment-modal {
+    color: #555;
+    float: right;
+    font-size: 36px;
+    font-weight: 300; /* Lighter weight */
+}
+
+#payment-modal .close-payment-modal:hover,
+#payment-modal .close-payment-modal:focus {
+    color: #000;
+}
+
+#payment-modal h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 32px;
+    font-weight: 500;
+    color: #222;
+}
+
+#payment-modal .form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 25px;
+}
+
+#payment-modal .form-group label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+#payment-modal .payment-options {
+    display: grid; /* Use grid for better layout */
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+#payment-modal .payment-options label {
+    display: block; /* Each label on its own line */
+    cursor: pointer;
+}
+
+#payment-modal .input-field {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #e0e0e0; /* Lighter border */
+    border-radius: 10px;
+    box-sizing: border-box;
+    transition: box-shadow 0.3s;
+}
+
+#payment-modal .input-field:focus {
+    box-shadow: 0 0 5px rgba(84, 164, 255, 0.5);
+    outline: none;
+}
+
+#payment-modal .submit-button {
+    width: 100%;
+    background-color: #007bff; /* Primary blue */
+    color: white;
+    padding: 16px 20px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 500;
+    transition: background-color 0.3s;
+}
+
+#payment-modal .submit-button:hover {
+    background-color: #0069d9;
+}

@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile Information</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+    <!--Stylesheet-->
+    <style media="screen">
+        body{
+            background-color: #2F3B52;
+            font-family: 'Poppins', sans-serif;
+            color: #ffffff;
+            padding: 50px;
+        }
+        .profile-card{
+            max-width: 500px;
+            background-color: rgba(255,255,255,0.13);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.1);
+            box-shadow: 0 0 40px rgba(8,7,16,0.6);
+            padding: 30px;
+            margin: 0 auto;
+        }
+        .profile-card h2{
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .profile-info{
+            margin-bottom: 20px;
+        }
+        .profile-info img {
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            margin-bottom: 10px;
+            display: block;
+            margin: 0 auto;
+        }
+        .profile-info label{
+            font-weight: 500;
+        }
+        .profile-info p{
+            margin-top: 5px;
+        }
+        .btn-container{
+            text-align: center;
+        }
+        .btn-container button{
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .back-btn {
+            background-color: transparent;
+            color: #ffffff;
+            border: 2px solid #ffffff;
+            margin-right: 10px;
+        }
+
+        .delete-btn {
+            background-color: #ff5252; /* Red color */
+            color: #ffffff;
+            margin-left: 10px;
+        }
+        .logout-btn {
+            background-color: #4CAF50; /* Green color */
+            color: white;
+            margin-left: 10px;
+            margin-right: 0;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        /* Edit profile modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: rgba(47, 59, 82, 0.9); /* Adjusted background color with opacity */
+            margin: 0 auto;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 500px; /* Adjusted maximum width of the modal */
+            width: 80%;
+            color: #ffffff;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); /* Centering the modal */
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1); /* Added box shadow */
+        }
+        .close {
+            color: #ffffff;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .close:hover,
+        .close:focus {
+            color: #aaaaaa;
+            text-decoration: none;
+        }
+        .edit-profile-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        .edit-profile-input {
+            width: 95%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: 1px solid #ffffff;
+            background-color: rgba(255,255,255,0.1);
+            color: #ffffff;
+        }
+        .edit-profile-button {
+            background-color: #ffffff;
+            color: #080710;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-card">
+        <h2>Profile Information</h2>
+        <div class="profile-info" id="profile-info">
+            <!-- Profile picture placeholder -->
+            <img id="profile-picture" src="https://via.placeholder.com/150" alt="Profile Picture">
+            <div>
+                <label>Username:</label>
+                <p id="username"></p> <!-- Removed the hardcoded text -->
+            </div>
+            <div>
+                <label>Email:</label>
+                <p id="email"></p> <!-- Removed the hardcoded text -->
+            </div>
+            <div>
+                <label>Full Name:</label>
+                <p id="fullname"></p> <!-- Removed the hardcoded text -->
+            </div>
+            <div>
+                <label>Phone Number:</label>
+                <p id="phone"></p> <!-- Removed the hardcoded text -->
+            </div>
+        </div>
+        <div class="btn-container">
+            <button class="back-btn" onclick="backToShop()">Back to Shop</button>
+            <button onclick="openEditModal()">Edit Profile</button>
+            <button class="delete-btn" onclick="deleteAccount()">Delete Account</button>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div id="editProfileModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeEditModal()">&times;</span>
+            <h2>Edit Profile</h2>
+            <form id="editProfileForm" onsubmit="saveChanges(); return false;">
+                <label class="edit-profile-label" for="editUsername">Username</label>
+                <input class="edit-profile-input" type="text" id="editUsername" value="" readonly>
+                <label class="edit-profile-label" for="editEmail">Email</label>
+                <input class="edit-profile-input" type="email" id="editEmail" value="">
+                <label class="edit-profile-label" for="editFullname">Full Name</label>
+                <input class="edit-profile-input" type="text" id="editFullname" value="">
+                <label class="edit-profile-label" for="editPhone">Phone Number</label>
+                <input class="edit-profile-input" type="tel" id="editPhone" value="">
+                <label class="edit-profile-label" for="editProfileImage">Profile Image URL</label>
+                <input class="edit-profile-input" type="url" id="editProfileImage" placeholder="Enter Image URL">
+                <button class="edit-profile-button" type="submit">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script> <!-- SweetAlert CDN -->
+
+    <script>
+        // Function to retrieve user data from local storage using the username
+        function getUserData(username) {
+            if (username) {
+                const userData = JSON.parse(localStorage.getItem(username));
+                return userData;
+            }
+            return null;
+        }
+    
+        // Function to display user information
+        function displayUserInfo() {
+            // Retrieve the username of the logged-in user from local storage
+            const loggedInUser = localStorage.getItem('loggedInUser');
+            
+            // Check if a user is logged in
+            if (!loggedInUser) {
+                // If no user is logged in, handle it accordingly (e.g., redirect to login page)
+                window.location.href = 'login.html';
+                return;
+            }
+    
+            // Call getUserData with the username of the logged-in user
+            const userData = getUserData(loggedInUser);
+    
+            if (userData) {
+                // Display user information if user data is found
+                document.getElementById('username').innerText = loggedInUser;
+                document.getElementById('email').innerText = userData.email;
+                document.getElementById('fullname').innerText = userData.fullname;
+                document.getElementById('phone').innerText = userData.phone;
+                document.getElementById('profile-picture').src = userData.profileImage; // Set profile picture from user data
+            } else {
+                // Display a message if user data is not found
+                alert('No user data found!');
+            }
+        }
+    
+        // Function to open the edit profile modal
+        function openEditModal() {
+            // Retrieve the user's data from local storage
+            const loggedInUser = localStorage.getItem('loggedInUser');
+            const userData = getUserData(loggedInUser);
+    
+            // Set the input field values with the user's current profile information
+            document.getElementById('editUsername').value = loggedInUser;
+            document.getElementById('editEmail').value = userData.email;
+            document.getElementById('editFullname').value = userData.fullname;
+            document.getElementById('editPhone').value = userData.phone;
+            document.getElementById('editProfileImage').value = userData.profileImage; // Set profile image URL in the modal
+    
+            // Display the edit profile modal
+            document.getElementById('editProfileModal').style.display = 'block';
+        }
+    
+        // Function to close the edit profile modal
+        function closeEditModal() {
+            document.getElementById('editProfileModal').style.display = 'none';
+        }
+        function saveChanges() {
+    // Get the edited user data from the form fields
+    const editedUserData = {
+        username: document.getElementById('editUsername').value,
+        email: document.getElementById('editEmail').value,
+        fullname: document.getElementById('editFullname').value,
+        phone: document.getElementById('editPhone').value,
+        profileImage: document.getElementById('editProfileImage').value,
+        // Retrieve the password from local storage and include it in the updated user data
+        password: JSON.parse(localStorage.getItem(document.getElementById('editUsername').value)).password
+    };
+
+    // Display a confirmation dialog using SweetAlert2
+    Swal.fire({
+        title: 'Save Changes?',
+        text: 'Are you sure you want to save the changes?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, save changes'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // If the user confirms, update the user data in localStorage and update the displayed profile information
+            const loggedInUser = localStorage.getItem('loggedInUser');
+            localStorage.setItem(loggedInUser, JSON.stringify(editedUserData));
+            document.getElementById('username').innerText = editedUserData.username;
+            document.getElementById('email').innerText = editedUserData.email;
+            document.getElementById('fullname').innerText = editedUserData.fullname;
+            document.getElementById('phone').innerText = editedUserData.phone;
+            document.getElementById('profile-picture').src = editedUserData.profileImage;
+
+            // Close the edit profile modal after saving changes
+            closeEditModal();
+
+            // Show a success message
+            Swal.fire(
+                'Changes Saved!',
+                'Your profile information has been updated.',
+                'success'
+            );
+        }
+    });
+}
+
+        function backToShop() {
+            window.location.href = 'shop.html'; // Replace 'shop.html' with the actual URL of your shop page
+        }
+
+        function deleteAccount() {
+            // Use SweetAlert2 for confirmation before deleting account
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You will not be able to recover your account!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const loggedInUser = localStorage.getItem('loggedInUser');
+                    localStorage.removeItem(loggedInUser);
+                    window.location.href = 'login.html';
+                    Swal.fire(
+                        'Deleted!',
+                        'Your account has been deleted.',
+                        'success'
+                    );
+                }
+            });
+        }
+
+        function logout() {
+    // Remove the logged-in user data from localStorage
+    localStorage.removeItem('loggedInUser');
+    
+    // Clear the session storage
+    sessionStorage.clear();
+
+    // Clear cookies if any (optional step depending on your use case)
+    document.cookie.split(";").forEach(function(c) { 
+        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+    });
+
+    // Replace the current history state with the login page
+    history.replaceState(null, null, 'login.html');
+
+    // Redirect to the login page
+    window.location.replace('login.html');
+}        
+        displayUserInfo();
+    </script>
+</body>
+</html>

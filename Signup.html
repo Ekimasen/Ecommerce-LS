@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Signup Form</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+    <!-- SweetAlert library -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!--Stylesheet-->
+    <style media="screen">
+        *,
+        *:before,
+        *:after{
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+        body{
+            background-color: #2F3B52;
+            font-family: 'Poppins', sans-serif;
+            color: #ffffff;
+        }
+        .background{
+            width: 430px;
+            height: 670px;
+            position: absolute;
+            transform: translate(-50%,-50%);
+            left: 50%;
+            top: 50%;
+        }
+        .background .shape{
+            height: 200px;
+            width: 200px;
+            position: absolute;
+            border-radius: 50%;
+        }
+        .shape:first-child{
+            background: linear-gradient(
+                #1845ad,
+                #23a2f6
+            );
+            left: -80px;
+            top: -80px;
+        }
+        .shape:last-child{
+            background: linear-gradient(
+                to right,
+                #ff512f,
+                #f09819
+            );
+            right: -30px;
+            bottom: -80px;
+        }
+        form{
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            background-color: rgba(255,255,255,0.13);
+            position: absolute;
+            transform: translate(-50%,-50%);
+            top: 50%;
+            left: 50%;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.1);
+            box-shadow: 0 0 40px rgba(8,7,16,0.6);
+            padding: 50px 35px;
+        }
+        form *{
+            font-family: 'Poppins',sans-serif;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+            outline: none;
+            border: none;
+        }
+        form h3{
+            grid-column: 1 / -1;
+            font-size: 32px;
+            font-weight: 500;
+            line-height: 42px;
+            text-align: center;
+        }
+        label{
+            display: block;
+            font-size: 16px;
+            font-weight: 500;
+        }
+        input, button{
+            height: 50px;
+            width: calc(100% - 20px);
+            background-color: rgba(255,255,255,0.07);
+            border-radius: 3px;
+            padding: 0 10px;
+            font-size: 14px;
+            font-weight: 300;
+            margin-top: 8px;
+        }
+        ::placeholder{
+            color: #e5e5e5;
+        }
+        button{
+            grid-column: 1 / -1;
+            background-color: #ffffff;
+            color: #080710;
+            padding: 15px 0;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .input-container{
+            grid-column: span 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="background">
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+    <form id="signup-form">
+        <h3>Sign Up Here</h3>
+
+        <div class="input-container">
+            <label for="username">Username</label>
+            <input type="text" placeholder="Enter your username" id="username" required>
+        </div>
+
+        <div class="input-container">
+            <label for="email">Email Address</label>
+            <input type="email" placeholder="Enter your email address" id="email" required>
+        </div>
+
+        <div class="input-container">
+            <label for="password">Password</label>
+            <input type="password" placeholder="Choose a password" id="password" required>
+        </div>
+
+        <div class="input-container">
+            <label for="fullname">Full Name</label>
+            <input type="text" placeholder="Enter your full name" id="fullname" required>
+        </div>
+
+        <div class="input-container">
+            <label for="confirm_password">Confirm Password</label>
+            <input type="password" placeholder="Confirm your password" id="confirm_password" required>
+        </div>
+
+        <div class="input-container">
+            <label for="phone">Phone Number</label>
+            <input type="tel" placeholder="Enter your phone number" id="phone" required>
+        </div>
+
+        <button type="submit">Sign Up</button>
+
+        <p style="margin-top: 20px;">Do you have an account? <a href="login.html">Log in here</a></p>
+    </form>
+
+    <script>
+        const form = document.getElementById('signup-form');
+    
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+    
+            // Get input values
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm_password').value;
+            const email = document.getElementById('email').value;
+            const fullname = document.getElementById('fullname').value;
+            const phone = document.getElementById('phone').value;
+    
+            // Check if any field is empty
+            if (!username || !password || !confirmPassword || !email || !fullname || !phone) {
+                showErrorMessage('Please fill in all fields.');
+                return;
+            }
+    
+            // Check if passwords match
+            if (password !== confirmPassword) {
+                showErrorMessage("Passwords don't match.");
+                return;
+            }
+    
+            // Check if username already exists
+            if (isUsernameTaken(username)) {
+                showErrorMessage('Username already taken. Please choose another one.');
+                return;
+            }
+    
+            // Save user details to local storage
+            saveUserDetails(username, password, email, fullname, phone);
+    
+            // Clear the form after saving
+            form.reset();
+    
+            // Show SweetAlert popup for successful signup
+            showSuccessMessage('Sign up successful! You can now login with your credentials.', redirectToLoginPage);
+        });
+    
+        function showErrorMessage(message) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: message,
+            });
+        }
+    
+        function showSuccessMessage(title, callback) {
+            Swal.fire({
+                icon: 'success',
+                title: title,
+                text: '',
+            }).then(callback);
+        }
+    
+        function isUsernameTaken(username) {
+            const existingUsernames = JSON.parse(localStorage.getItem('usernames')) || [];
+            return existingUsernames.includes(username);
+        }
+    
+        function saveUserDetails(username, password, email, fullname, phone) {
+            const existingUsernames = JSON.parse(localStorage.getItem('usernames')) || [];
+            existingUsernames.push(username);
+            localStorage.setItem('usernames', JSON.stringify(existingUsernames));
+    
+            // Save user details
+            localStorage.setItem(username, JSON.stringify({
+                password: password,
+                email: email,
+                fullname: fullname,
+                phone: phone,
+            }));
+        }
+    
+        function redirectToLoginPage(result) {
+            if (result.isConfirmed) {
+                window.location.href = 'login.html';
+            }
+        }
+    </script>
+</body>
+</html>

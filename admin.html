@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        /* Navbar Styles */
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .navbar-dark .navbar-nav .nav-link {
+            color: #333;
+        }
+
+        .navbar-dark .navbar-nav .nav-link:hover {
+            color: #666;
+        }
+
+        .navbar-dark .navbar-toggler-icon {
+            border-color: #333;
+        }
+
+        /* Jumbotron Styles */
+        .jumbotron {
+            background-color: #007bff;
+            color: #fff;
+            padding: 2rem 0;
+            border-radius: 0;
+        }
+
+        .jumbotron h1 {
+            font-size: 3.5rem;
+        }
+
+        .jumbotron p {
+            font-size: 1.2rem;
+        }
+
+        /* Card Styles */
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-body {
+            text-align: center;
+        }
+
+        .card-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .card-text {
+            font-size: 1.5rem;
+            color: #666;
+        }
+
+        /* Button Styles */
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            font-size: 1.2rem;
+            font-weight: bold;
+            padding: 12px 30px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar Section -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="#">Admin Dashboard</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="user.html">Users</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="product.html">Products</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="sales.html">Sales</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="logout()">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    <div class="jumbotron text-center">
+        <div class="container">
+            <h1 class="display-4">Admin</h1>
+            <p class="lead">Manage your dashboard.</p>
+        </div>
+    </div>
+
+
+    <div class="container">
+        <div class="row">
+            <!-- Total Users Card -->
+            <div class="col-lg-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Users</h5>
+                        <p class="card-text" id="totalUsers">Loading...</p>
+                        <a href="user.html" class="btn btn-primary">View</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Total Products Card -->
+            <div class="col-lg-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Products</h5>
+                        <p class="card-text" id="totalProducts">Loading...</p>
+                        <a href="product.html" class="btn btn-primary">View</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Total Sales Card -->
+            <div class="col-lg-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Sales</h5>
+                        <p class="card-text" id="totalSales">Loading...</p>
+                        <a href="sales.html" class="btn btn-primary">View</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loggedInUser = localStorage.getItem('loggedInUser');
+            // Check if the user is logged in, if not, redirect to the login page
+            if (!loggedInUser) {
+                window.location.href = 'login.html'; // Redirect to the login page
+            }
+    
+            // Retrieve sales records from localStorage
+            const salesRecords = JSON.parse(localStorage.getItem('orders')) || [];
+    
+            // Calculate the total number of products sold
+            const totalSales = salesRecords.reduce((total, record) => total + record.products.length, 0);
+    
+            // Update the card text with the total number of products sold
+            const totalSalesElement = document.getElementById('totalSales');
+            totalSalesElement.textContent = totalSales;
+        });
+    
+        // Retrieve users from local storage
+        const users = JSON.parse(localStorage.getItem('usernames')) || [];
+        // Retrieve products from local storage
+        const products = JSON.parse(localStorage.getItem('products')) || [];
+    
+        // Filter out the admin user
+        const regularUsers = users.filter(user => user !== 'admin');
+    
+        // Display total number of regular users
+        const totalUsersElement = document.getElementById('totalUsers');
+        totalUsersElement.textContent = regularUsers.length;
+    
+        // Display total number of products
+        const totalProductsElement = document.getElementById('totalProducts');
+        totalProductsElement.textContent = products.length;
+    
+        // Logout Functionality
+        function logout() {
+            // Remove the logged-in user data from localStorage
+            localStorage.removeItem('loggedInUser');
+    
+            // Redirect to the login page
+            window.location.replace('login.html');
+        }
+    </script>
+</body>
+</html>

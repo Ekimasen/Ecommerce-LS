@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CHOPPY</title>
+    <link rel="stylesheet" href="./font-awesome/webfonts/all.css"/>
+    <link rel="stylesheet" href="style.css"> 
+</head>
+<style>
+    /* Profile link styles */
+    #profile-link {
+        margin-left: 20px;
+        display: flex;
+        align-items: center;
+        color: #ffffff;
+        text-decoration: none;
+        font-size: 18px;
+    }
+
+    #profile-link img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-right: 5px;
+    }
+
+    #profile-link:hover {
+        text-decoration: underline;
+    }
+</style>
+<body>
+    <section id="header">
+        <a href="#"> <img src="img/cp1.png" class="logo" alt="" height="80px"> </a>
+        <div>
+            <ul id="navbar">
+                <li><a href="Ecommerce.html">Home</a></li>
+                <li><a class="active" href="shop.html">Shop</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="about.html">About</a></li>
+                <a href="#" id="close"><i class="fa-solid fa-xmark" style="color: #000000;"></i></a>
+                <li id="lg-bag"><a href="cart.html"><i class="fa-regular fa-bag-shopping"></i></a><span id="cart-count">0</span></li>
+                <a href="#" id="close"><i class="fa-solid fa-xmark" style="color: #000000;"></i></a>
+                <a href="profile_info.html"><li id="profile-link"></li></a>
+            </ul>
+        </div>
+        <div id="mobile">
+            <a href="cart.html"><i class="fa-regular fa-bag-shopping"></i></a>
+            <i id="bar" class="fa-sharp fa-regular fa-bars"></i>
+        </div>
+    </section>
+
+    <section id="prodetails" class="section-p1">
+        <div class="single-pro-image">
+            <img src="" width="100%" id="Img" alt="">
+        </div>
+
+        <div class="single-pro-details">
+            <h6>T-Shirt</h6>
+            <h1 id="productName">MilkyG-Embroid</h1>
+            <h2 id="productPrice">₱850</h2>
+            <select id="productSize">
+                <option>Select Size</option>
+                <option>XXL</option>
+                <option>XL</option>
+                <option>Large</option>
+                <option>Medium</option>
+                <option>Small</option>
+            </select>
+            <input type="number" value="1" id="productQuantity">
+            <button class="normal" onclick="addToCart()">Add to Cart</button>
+            <h4>Product Details</h4>
+            <span id="productDescription">
+                High quality cotton made with good intentions!
+            </span>
+        </div>
+    </section>
+
+    <section id="newsletter" class="section-p1 section-m1">
+    </section>
+
+    <footer class="section-p1">
+        <div class="col">
+            <img class="logo" src="img/logo.png" alt="" height="50px" width="145px">
+            <h4>Contact</h4>
+            <p><strong>Address: </strong> Agarant St., Pob.Norte, Rizal, Nueva Ecija</p>
+            <p><strong>Phone: </strong> 09996665555</p>
+            <p><strong>Hours: </strong> 8:00AM - 5PM, Mon - Fri</p>
+            <div class="follow">
+                <h4>Follow us</h4>
+                <div class="icon">
+                    <i class="fab fa-facebook-f"></i>
+                    <i class="fab fa-twitter"></i>
+                    <i class="fab fa-instagram"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <h4>About</h4>
+            <a href="#">About Us</a>
+            <a href="#">Delivery Informaion</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms Conditions</a>
+            <a href="#">Contact Us</a>
+        </div>
+    </footer>
+     <!-- SweetAlert CDN -->
+     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="script.js"></script>
+    <script>
+        function getUsername() {
+            return localStorage.getItem('username');
+        }
+
+        function addToCart() {
+            const username = getUsername();
+            const cartKey = `cart_${username}`;
+            const cartItems = JSON.parse(localStorage.getItem(cartKey)) || [];
+
+            // Retrieve product details from the page
+            const product = {
+                name: document.getElementById('productName').textContent,
+                price: parseFloat(document.getElementById('productPrice').textContent.replace('₱', '')),
+                quantity: parseInt(document.getElementById('productQuantity').value),
+                size: document.getElementById('productSize').value, // Add product size
+                imageURL: document.getElementById('Img').src, // Adding imageURL
+                // Add other product details as needed
+            };
+
+            // Check if the product already exists in the cart
+            const existingProductIndex = cartItems.findIndex(item => item.name === product.name && item.size === product.size);
+            if (existingProductIndex !== -1) {
+                // If product exists, update the quantity
+                cartItems[existingProductIndex].quantity += product.quantity;
+            } else {
+                // If product doesn't exist, push it into the cart
+                cartItems.push(product);
+            }
+
+            // Update the cart in local storage
+            localStorage.setItem(cartKey, JSON.stringify(cartItems));
+
+            // Update the cart count display
+            updateCartCount(cartItems.length);
+
+            // Sweet alert for adding to cart
+            Swal.fire({
+                icon: 'success',
+                title: 'Product added to cart!',
+                showConfirmButton: false,
+                timer: 1500,
+                html: '<i class="fas fa-shopping-cart"></i>'
+            });
+        }
+
+        function updateCartCount(count) {
+            document.getElementById('cart-count').textContent = count;
+        }
+
+        function updateInitialCartCount() {
+            const username = getUsername();
+            if (username) {
+                const cartKey = `cart_${username}`;
+                const cartItems = JSON.parse(localStorage.getItem(cartKey)) || [];
+                updateCartCount(cartItems.length);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const product = JSON.parse(localStorage.getItem('selectedProduct'));
+
+            if (product) {
+                const imgURL = product.imageURL || '';
+                document.getElementById('Img').src = imgURL;
+                document.getElementById('productName').textContent = product.name || 'Product Name';
+                document.getElementById('productPrice').textContent = `₱${product.price}` || '₱0';
+                document.getElementById('productDescription').textContent = product.description || 'Product Description';
+            }
+
+            updateInitialCartCount();
+
+            // Function to get the current username from localStorage
+            function getUsername() {
+                return localStorage.getItem('username');
+            }
+
+            // Function to display profile picture and username
+            function displayProfileInfo() {
+                const profileLink = document.getElementById('profile-link');
+                const username = getUsername();
+                if (username) {
+                    const userData = JSON.parse(localStorage.getItem(username));
+                    const profileImage = userData.profileImage;
+                    const img = document.createElement('img');
+                    img.src = profileImage;
+                    img.alt = 'Profile Picture';
+                    profileLink.appendChild(img);
+                    profileLink.appendChild(document.createTextNode(username));
+                } else {
+                    profileLink.textContent = 'Profile';
+                }
+            }
+
+            // Call the displayProfileInfo function here
+            displayProfileInfo();
+        });
+    </script>
+</body>
+</html>

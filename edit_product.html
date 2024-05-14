@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Product</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="#">Edit Product</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="product.html">View Products</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Settings</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="admin.html">Back to Admin Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="logoutBtn">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h2>Edit Product</h2>
+        <form id="editProductForm">
+            <div class="form-group">
+                <label for="productName">Product Name</label>
+                <input type="text" class="form-control" id="productName" required>
+            </div>
+            <div class="form-group">
+                <label for="productPrice">Price</label>
+                <input type="text" class="form-control" id="productPrice" required>
+            </div>
+            <div class="form-group">
+                <label for="productDescription">Description</label>
+                <textarea class="form-control" id="productDescription" rows="3" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="productImageURL">Image URL</label>
+                <input type="text" class="form-control" id="productImageURL">
+            </div>
+            <button type="submit" class="btn btn-primary">Update Product</button>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Retrieve product index from URL query string
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const productIndex = urlParams.get('index');
+
+        // Retrieve products from local storage
+        let products = JSON.parse(localStorage.getItem('products')) || [];
+
+        // Populate form with product details
+        const editProductForm = document.getElementById('editProductForm');
+        editProductForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Retrieve updated input values
+            const productName = document.getElementById('productName').value;
+            const productPrice = document.getElementById('productPrice').value;
+            const productDescription = document.getElementById('productDescription').value;
+            const productImageURL = document.getElementById('productImageURL').value;
+
+            // Update product details in the products array
+            products[productIndex].name = productName;
+            products[productIndex].price = productPrice;
+            products[productIndex].description = productDescription;
+            products[productIndex].imageURL = productImageURL;
+
+            // Update products array in local storage
+            localStorage.setItem('products', JSON.stringify(products));
+
+            // Redirect to view products page
+            window.location.href = 'product.html';
+        });
+
+        // Prefill form fields with existing product details
+        if (products && products.length > productIndex) {
+            document.getElementById('productName').value = products[productIndex].name;
+            document.getElementById('productPrice').value = products[productIndex].price;
+            document.getElementById('productDescription').value = products[productIndex].description;
+            document.getElementById('productImageURL').value = products[productIndex].imageURL;
+        }
+
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            // Remove user session from local storage
+            localStorage.removeItem('username');
+            localStorage.removeItem('password');
+            // Redirect to the login page
+            window.location.href = 'login.html';
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Dashboard</title>
+    <!-- Include Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Sales Dashboard</h1>
+        <!-- Back to Admin button -->
+        <a href="admin.html" class="btn btn-primary mb-3">Back to Admin</a>
+        <!-- Clear Sales button -->
+        <button id="clear-sales-btn" class="btn btn-danger mb-3 ml-3">Clear Sales</button>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Username</th>
+                        <th>Shipping Info</th>
+                        <th>Products</th>
+                    </tr>
+                </thead>
+                <tbody id="sales-data">
+                    <!-- Sales data will be dynamically added here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Include Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const salesData = document.getElementById('sales-data');
+
+            // Function to render sales data
+            function renderSalesData() {
+                // Retrieve sales data from localStorage
+                const orders = JSON.parse(localStorage.getItem('orders')) || [];
+
+                // Clear existing sales data
+                salesData.innerHTML = '';
+
+                // Render sales data
+                orders.forEach(function(order, index) {
+                    const row = `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${order.username}</td>
+                            <td>
+                                <strong>Name:</strong> ${order.shippingInfo.name}<br>
+                                <strong>Address:</strong> ${order.shippingInfo.address}<br>
+                                <strong>Contact:</strong> ${order.shippingInfo.contact}
+                            </td>
+                            <td>
+                                ${order.products.map(product => product.name).join(', ')}
+                            </td>
+                        </tr>
+                    `;
+                    salesData.insertAdjacentHTML('beforeend', row);
+                });
+            }
+
+            // Event listener for clear sales button
+            document.getElementById('clear-sales-btn').addEventListener('click', function() {
+                // Clear sales data from localStorage
+                localStorage.removeItem('orders');
+
+                // Update the table to reflect the cleared sales
+                renderSalesData();
+            });
+
+            // Initially render sales data when the page loads
+            renderSalesData();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CHOPPY</title>
+    <link rel="stylesheet" href="./font-awesome/webfonts/all.css"/>
+    <link rel="stylesheet" href="style.css"> 
+    <link rel="stylesheet" href="css/cart.css">
+    <!-- Add Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> 
+    <!-- Include SweetAlert CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+</head>
+<body>
+    <!-- Header Section -->
+    <section id="header">
+        <a href="#"> <img src="img/cp1.png" class="logo" alt="" height="80px"> </a>
+        <div>
+            <ul id="navbar">
+                <li><a href="Ecommerce.html">Home</a></li>
+                <li><a href="shop.html">Shop</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="#" id="close"><i class="fa-solid fa-xmark" style="color: #000000;"></i></a></li>
+                <li id="lg-bag"><a href="cart.html"><i class="fa-regular fa-bag-shopping"></i></a><span id="cart-count" class="badge">0</span></li>
+                <a href="profile_info.html"><li id="profile-link"></li></a>
+            </ul>
+        </div>
+        <div id="mobile">
+            <a href="cart.html"><i class="fa-regular fa-bag-shopping"></i></a>
+            <i id="bar" class="fa-sharp fa-regular fa-bars"></i>
+        </div>
+    </section>
+
+    <!-- Page Header Section -->
+    <section id="page-header" class="container my-4">
+        <h2 class="text-center mb-4">Your Cart</h2>
+    </section>
+
+    <!-- Cart Items Section -->
+    <section id="cart-items" class="section-p1">
+        <div class="container">
+            <table id="cart-table">
+                <thead>
+                    <tr>
+                        <th scope="col">Product</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Size</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Total</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Cart items will be dynamically added here -->
+                </tbody>
+            </table>
+        </div>
+        <!-- Checkout button -->
+        <button id="checkout-btn" class="btn btn-primary">Checkout</button>
+    </section>
+
+    <!-- Footer Section -->
+    <footer class="section-p1">
+        <div class="col">
+            <img class="logo" src="img/black.png" alt="" height="50px" width="200px">
+            <h4>Contact</h4>
+            <p><strong>Address: </strong> Cabanatuan, Nueva Ecija</p>
+            <p><strong>Phone: </strong> 09184535115</p>
+            <div class="follow">
+                <h4>Follow us</h4>
+                <div class="icon">
+                    <i class="fab fa-facebook-f"></i>
+                    <i class="fab fa-twitter"></i>
+                    <i class="fab fa-instagram"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <h4>About</h4>
+            <a href="#">About Us</a>
+            <a href="#">Delivery Informaion</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms Conditions</a>
+            <a href="#">Contact Us</a>
+        </div>
+    </footer>
+
+<!-- Shipping modal -->
+<div id="shipping-modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Shipping Information</h2>
+        <form id="shipping-form">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required><br><br>
+            <label for="address">Address:</label>
+            <input type="text" id="address" name="address" required><br><br>
+            <label for="contact">Contact Number:</label>
+            <input type="text" id="contact" name="contact" required><br><br>
+            <!-- Payment Method Section -->
+            <label for="payment-method">Payment Method:</label>
+            <select id="payment-method" name="payment-method" required>
+                <option value="">Select Payment Method</option>
+                <option value="Credit-Card">Credit Card</option>
+                <option value="PayPal">PayPal</option>
+                <option value="Gcash">GCash</option>
+                <option value="PayMaya">PayMaya</option>
+                <option value="COD">Cash on Delivery</option>
+            </select><br><br> 
+            <!-- End Payment Method Section -->
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+</div>
+
+    <!-- Invoice modal -->
+    <div id="invoice-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Invoice</h2>
+            <div id="invoice-details"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loggedInUser = localStorage.getItem('loggedInUser');
+            // Function to get the current username from localStorage
+            function getUsername() {
+                return localStorage.getItem('username');
+            }
+            const cartTableBody = document.querySelector('#cart-table tbody');
+    
+            // Retrieve cart items for the logged-in user from local storage
+            function getCartItems() {
+                const username = getUsername();
+                if (username) {
+                    const cartKey = `cart_${username}`;
+                    return JSON.parse(localStorage.getItem(cartKey)) || [];
+                }
+                return [];
+            }
+    
+            const cartItems = getCartItems();
+    
+            // Function to create HTML for each cart item
+            function createCartItemElement(product) {
+                const cartItem = document.createElement('tr');
+                
+                // Product image cell
+                const productImage = document.createElement('td');
+                const img = document.createElement('img');
+                img.src = product.imageURL;
+                img.alt = product.name;
+                productImage.appendChild(img);
+    
+                // Product name cell
+                const productName = document.createElement('td');
+                productName.textContent = product.name;
+    
+                // Product size cell
+                const productSize = document.createElement('td');
+                productSize.textContent = product.size;
+    
+                // Product price cell
+                const productPrice = document.createElement('td');
+                productPrice.textContent = `₱${product.price}`;
+    
+                // Quantity cell
+                const productQuantity = document.createElement('td');
+                const quantityInput = document.createElement('input');
+                quantityInput.type = 'number';
+                quantityInput.value = product.quantity;
+                quantityInput.min = '1';
+                quantityInput.addEventListener('input', function() {
+                    updateCartItemQuantity(product, parseInt(this.value));
+                });
+                productQuantity.appendChild(quantityInput);
+    
+                // Total price cell
+                const productTotal = document.createElement('td');
+                productTotal.textContent = `₱${(product.price * product.quantity).toFixed(2)}`;
+    
+                // Delete button cell
+                const deleteButton = document.createElement('td');
+                const deleteBtn = document.createElement('button');
+                deleteBtn.textContent = 'Delete';
+                deleteBtn.classList.add('btn', 'btn-danger');
+                deleteBtn.addEventListener('click', function() {
+                    removeFromCart(product);
+                    cartItem.remove();
+                });
+                deleteButton.appendChild(deleteBtn);
+    
+                // Appending cells to the cart item row
+                cartItem.appendChild(productImage);
+                cartItem.appendChild(productName);
+                cartItem.appendChild(productSize);
+                cartItem.appendChild(productPrice);
+                cartItem.appendChild(productQuantity);
+                cartItem.appendChild(productTotal);
+                cartItem.appendChild(deleteButton);
+    
+                return cartItem;
+            }
+    
+            // Render cart items
+            function updateCart() {
+                cartTableBody.innerHTML = ''; // Clear existing items
+                let totalPrice = 0;
+                cartItems.forEach(function(product) {
+                    const cartItemElement = createCartItemElement(product);
+                    cartTableBody.appendChild(cartItemElement);
+                    totalPrice += product.price * product.quantity;
+                });
+                const cartCount = document.querySelector('#cart-count');
+                cartCount.textContent = cartItems.length;
+            }
+    
+            // Update cart initially
+            updateCart();
+    
+            // Function to remove item from cart
+            function removeFromCart(product) {
+                const username = getUsername();
+                if (username) {
+                    const cartKey = `cart_${username}`;
+                    const index = cartItems.findIndex(item => item.name === product.name);
+                    if (index !== -1) {
+                        // Confirm deletion with SweetAlert
+                        Swal.fire({
+                            title: 'Are you sure?',
+                            text: 'You are about to remove this item from your cart.',
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#d33',
+                            cancelButtonColor: '#3085d6',
+                            confirmButtonText: 'Yes, remove it!'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                cartItems.splice(index, 1);
+                                localStorage.setItem(cartKey, JSON.stringify(cartItems));
+                                updateCart();
+                                // Alert the user with SweetAlert
+                                Swal.fire(
+                                    'Deleted!',
+                                    'Your item has been removed from the cart.',
+                                    'success'
+                                );
+                            }
+                            else{
+                                location.reload();
+                            }
+                        });
+                    }
+                }
+            }
+
+            // Function to update item quantity
+            function updateCartItemQuantity(product, quantity) {
+                const username = getUsername();
+                if (username) {
+                    const cartKey = `cart_${username}`;
+                    const index = cartItems.findIndex(item => item.name === product.name);
+                    if (index !== -1) {
+                        cartItems[index].quantity = quantity;
+                        localStorage.setItem(cartKey, JSON.stringify(cartItems));
+                        updateCart();
+                    }
+                }
+            }
+
+            // Function to add item to cart
+            function addToCart(product) {
+                const username = getUsername();
+                if (username) {
+                    const cartKey = `cart_${username}`;
+                    let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+                    const existingItemIndex = cart.findIndex(item => item.name === product.name);
+                    if (existingItemIndex !== -1) {
+                        // If item already exists in cart, increase its quantity
+                        cart[existingItemIndex].quantity++;
+                    } else {
+                        // If item is not in cart, add it
+                        cart.push({ ...product, quantity: 1 });
+                    }
+                    localStorage.setItem(cartKey, JSON.stringify(cart));
+                    updateCart();
+                    // Alert the user with SweetAlert
+                    Swal.fire(
+                        'Added to Cart!',
+                        'Your item has been added to the cart.',
+                        'success'
+                    );
+                }
+            }
+            // Checkout button event listener
+            const checkoutBtn = document.getElementById('checkout-btn');
+            checkoutBtn.addEventListener('click', function() {
+                const modal = document.getElementById('shipping-modal');
+                modal.style.display = 'block';
+            });
+    
+            // Close modal button event listener
+            const closeBtn = document.getElementsByClassName('close')[0];
+            closeBtn.addEventListener('click', function() {
+                const modal = document.getElementById('shipping-modal');
+                modal.style.display = 'none';
+            });
+    
+            // When the user clicks anywhere outside of the modal, close it
+            window.addEventListener('click', function(event) {
+                const modal = document.getElementById('shipping-modal');
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+    
+            // Shipping form submission event listener
+            const shippingForm = document.getElementById('shipping-form');
+            shippingForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const username = getUsername(); // Retrieve username
+                if (username) {
+                    const name = document.getElementById('name').value;
+                    const address = document.getElementById('address').value;
+                    const contact = document.getElementById('contact').value;
+                    const paymentMethod = document.getElementById('payment-method').value;
+    
+                    // Create an object with shipping information and username
+                    const shippingInfo = {
+                        username: username,
+                        name: name,
+                        address: address,
+                        contact: contact,
+                        paymentMethod: paymentMethod    
+                    };
+    
+                    // Store the shipping information in localStorage
+                    localStorage.setItem('shippingInfo', JSON.stringify(shippingInfo));
+                    recordOrder(username, shippingInfo, cartItems);
+                    clearCart();
+                    const modal = document.getElementById('shipping-modal');
+                    modal.style.display = 'none';
+    
+                    // Show SweetAlert for successful order
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Order Successful!',
+                        text: 'Your order has been successfully placed.',
+                        confirmButtonText: 'OK'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            displayInvoice(username, shippingInfo, cartItems);
+                        }
+                    });
+                } else {
+                    alert('User not logged in!');
+                }
+            });
+
+            // Function to record order information
+            function recordOrder(username, shippingInfo, cartItems) {
+                const order = {
+                    username: username,
+                    shippingInfo: shippingInfo,
+                    products: cartItems
+                };
+    
+                // Retrieve existing orders from localStorage
+                const orders = JSON.parse(localStorage.getItem('orders')) || [];
+                orders.push(order);
+                localStorage.setItem('orders', JSON.stringify(orders));
+            }
+    
+            // Function to clear cart items from localStorage and update cart count
+            function clearCart() {
+                const username = getUsername();
+                if (username) {
+                    const cartKey = `cart_${username}`;
+                    localStorage.removeItem(cartKey);
+                    const cartCount = document.querySelector('#cart-count');
+                    cartCount.textContent = '0';
+                }
+            }
+
+            function displayInvoice(username, shippingInfo, cartItems) {
+    const invoiceModal = document.getElementById('invoice-modal');
+    const invoiceDetails = document.getElementById('invoice-details');
+
+    // Clear previous invoice details
+    invoiceDetails.innerHTML = '';
+
+    // Calculate total amount
+    let totalAmount = 0;
+    cartItems.forEach(item => {
+        totalAmount += item.price * item.quantity;
+    });
+
+    // Create a div to hold all invoice information
+    const invoiceContent = document.createElement('div');
+
+    // Add shipping information
+    const shippingInfoDiv = document.createElement('div');
+    shippingInfoDiv.innerHTML = `
+        <p><strong>Name:</strong> ${shippingInfo.name}</p>
+        <p><strong>Address:</strong> ${shippingInfo.address}</p>
+        <p><strong>Contact:</strong> ${shippingInfo.contact}</p>
+    `;
+    invoiceContent.appendChild(shippingInfoDiv);
+
+    // Add order details table
+    const orderDetailsTable = document.createElement('table');
+    orderDetailsTable.classList.add('invoice-table');
+    const tableHeader = document.createElement('thead');
+    tableHeader.innerHTML = `
+        <tr>
+            <th>Product</th>
+            <th>Size</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Total</th>
+        </tr>
+    `;
+    const tableBody = document.createElement('tbody');
+    cartItems.forEach(item => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${item.name}</td>
+            <td>${item.size}</td>
+            <td>₱${item.price.toFixed(2)}</td>
+            <td>${item.quantity}</td>
+            <td>₱${(item.price * item.quantity).toFixed(2)}</td>
+        `;
+        tableBody.appendChild(row);
+    });
+    orderDetailsTable.appendChild(tableHeader);
+    orderDetailsTable.appendChild(tableBody);
+    invoiceContent.appendChild(orderDetailsTable);
+
+    // Add total amount
+    const totalAmountParagraph = document.createElement('p');
+    totalAmountParagraph.innerHTML = `<strong>Total Amount:</strong> ₱${totalAmount.toFixed(2)}`;
+    invoiceContent.appendChild(totalAmountParagraph);
+    // Add payment method information
+    const paymentMethodParagraph = document.createElement('p');
+    paymentMethodParagraph.innerHTML = `<strong>Payment Method:</strong> ${shippingInfo.paymentMethod}`; 
+    invoiceContent.appendChild(paymentMethodParagraph);
+
+    // Add confirm button
+    const confirmButton = document.createElement('button');
+    confirmButton.textContent = 'Confirm';
+    confirmButton.classList.add('btn', 'btn-primary');
+    confirmButton.addEventListener('click', function() {
+        location.reload(); // Reload the page
+    });
+    invoiceContent.appendChild(confirmButton);
+
+    // Append invoice content to modal
+    invoiceDetails.appendChild(invoiceContent);
+
+    // Display the invoice modal
+    invoiceModal.style.display = 'block';
+}
+
+
+            // Close invoice modal button event listener
+            const closeInvoiceBtn = document.getElementById('invoice-modal').getElementsByClassName('close')[0];
+            closeInvoiceBtn.addEventListener('click', function() {
+                const invoiceModal = document.getElementById('invoice-modal');
+                invoiceModal.style.display = 'none';
+            });
+
+            // Display profile info function
+            function displayProfileInfo() {
+                const profileLink = document.getElementById('profile-link');
+                const username = getUsername();
+                if (username) {
+                    const userData = JSON.parse(localStorage.getItem(username));
+                    const profileImage = userData.profileImage;
+                    const img = document.createElement('img');
+                    img.src = profileImage;
+                    img.alt = 'Profile Picture';
+                    profileLink.appendChild(img);
+                    profileLink.appendChild(document.createTextNode(username));
+                } else {
+                    profileLink.textContent = 'Profile';
+                }
+            }
+
+            // Call display profile info function
+            displayProfileInfo();
+            // Redirect to login page if user is not logged in
+            if (!loggedInUser) {
+                window.location.href = 'login.html';
+            }
+        });
+    </script>
+</body>
+</html>
