@@ -212,7 +212,7 @@
             // Check if a user is logged in
             if (!loggedInUser) {
                 // If no user is logged in, handle it accordingly (e.g., redirect to login page)
-                window.location.href = 'login.html';
+                window.location.href = 'index.html';
                 return;
             }
     
@@ -339,10 +339,10 @@
     });
 
     // Replace the current history state with the login page
-    history.replaceState(null, null, 'login.html');
+    history.replaceState(null, null, 'index.html');
 
     // Redirect to the login page
-    window.location.replace('login.html');
+    window.location.replace('index.html');
 }        
         displayUserInfo();
     </script>
